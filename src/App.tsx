@@ -2,12 +2,20 @@ import { useState } from 'react';
 import Button from '@mui/material/Button';
 import { revenues } from './data/revenues.data'
 import { getTotal } from './utils/getTotal.utils';
-import { getHtml } from './utils/getHtml.utils';  
+import { getHtml } from './utils/getHtml.utils'; 
+import { signInWithGoogle } from './utils/firebase-auth'; 
 import emailjs from '@emailjs/browser'
 import './App.css';
 
 function App() {
   const [total, setTotal] = useState('')
+
+  const signIn = async() => {
+    const res = await signInWithGoogle()
+    console.log(res)
+    const profile = JSON.stringify(res.additionalUserInfo?.profile)
+    alert(profile)
+  }
 
   const stringListArray = revenues.map(rev=> {
     return `<li style="width:33vw;list-style:none;margin:.5rem;padding:.5rem;background-color:#5579c6;color:white;border-radius:.3rem;">${rev}</li>`
@@ -43,6 +51,7 @@ function App() {
       <Button data-testid='abc123' onClick={() => setTotal(getTotal(revenues))} variant='contained' size='large'>Get Total</Button>
       <p>Total: <span style={{ color: 'green' }}>{total}</span></p>
       <Button onClick={sendEmail} variant='contained' size='large'>Send Email</Button>
+      <Button onClick={signIn} variant='contained' size='large'>Sign In</Button>
     </div>
   );
 }
